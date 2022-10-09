@@ -15,6 +15,7 @@ remotes::install_github("SWotherspoon/flat")
 
 ## Usage
 
-These smoothers are used with `gam` much like any other smoothers, but the user must supply knots.  
-The vignette provides examples.
+These smoothers are used with `gam` much like any other smoothers, but produce smooths that are flat 
+(have derivative zero) at one or both end knots. As the knots control where the smoth is flat, the 
+user should select the knots manually. The vignette provides examples of use.
 

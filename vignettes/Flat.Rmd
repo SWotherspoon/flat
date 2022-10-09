@@ -14,6 +14,162 @@ knitr::opts_chunk$set(
 )
 ```
 
+## Constrained Smoothers
+
+This package provides smooths constrained to have zero first derivative at one
+or both of the leftmost and rightmost knots.  There are two forms: the "z"
+smooths constrain the first derivative to be zero but the smooth is a cubic
+beyond that; while the "f" smooths constrain the first derivative to be zero but
+the smooth is linear beyond that.  Each has three forms, "zb", "zl", "zr" and
+"fb", "fl", "fr" depending upon whether the derivative should be zero at both,
+or the just leftmost or rightmost knots respectively.
+
+This is a straightforward extension of Wood (2017), section 5.3.1.
+
 ```{r setup}
 library(flat)
+```
+
+## Noisy Cosine
+
+We illustrate the smooths with a noisy cosine.  In the first case the knots
+contain the data, in the second the data extend beyond the knots.
+
+### Test 1
+
+Generate cosine data on the interval [0,1]
+```{r}
+library(mgcv)
+set.seed(37)
+n <- 500
+d <- data.frame(x=seq(0,1,length=n),
+                y=cos(pi*seq(0,1,length=n))+rnorm(n,0,0.01))
+ks <- seq(0,1,length=10)
+plot(y~x,data=d)
+```
+
+Fit a standard cubic spline
+```{r}
+fit <- gam(y ~ s(x,bs="cr"),
+           knots = list(x=ks),
+           family=gaussian(),data=d)
+summary(fit)
+fit$aic
+plot(fit,ylim=c(-1.5,1.5))
+```
+
+Constrain the smooth to be flat at both ends
+```{r}
+fit <- gam(y ~ s(x,bs="fb"),
+           knots = list(x=ks),
+           family=gaussian(),data=d)
+summary(fit)
+fit$aic
+plot(fit,ylim=c(-1.5,1.5))
+```
+
+
+Constrain the smooth to be flat at the leftmost knot
+```{r}
+fit <- gam(y ~ s(x,bs="fl"),
+           knots = list(x=ks),
+           family=gaussian(),data=d)
+summary(fit)
+fit$aic
+plot(fit,ylim=c(-1.5,1.5))
+```
+
+Constrain the smooth to be flat at the rightmost knot
+```{r}
+fit <- gam(y ~ s(x,bs="fr"),
+           knots = list(x=ks),
+           family=gaussian(),data=d)
+summary(fit)
+fit$aic
+plot(fit,ylim=c(-1.5,1.5))
+```
+
+
+### Test 2
+
+Generate cosine data on the interval [-0.2,1.2]
+```{r}
+library(mgcv)
+set.seed(37)
+n <- 500
+d <- data.frame(x=seq(-0.2,1.2,length=n),
+                y=cos(pi*seq(-0.2,1.2,length=n))+rnorm(n,0,0.01))
+ks <- seq(0,1,length=10)
+plot(y~x,data=d)
+```
+
+Fit a standard cubic spline
+```{r}
+fit <- gam(y ~ s(x,bs="cr"),
+           knots = list(x=ks),
+           family=gaussian(),data=d)
+summary(fit)
+fit$aic
+plot(fit,ylim=c(-1.5,1.5))
+```
+
+Constrain the smooth to be flat at both ends
+```{r}
+fit <- gam(y ~ s(x,bs="fb"),
+           knots = list(x=ks),
+           family=gaussian(),data=d)
+summary(fit)
+fit$aic
+plot(fit,ylim=c(-1.5,1.5))
+```
+
+Constrain the smooth to have zero derivative at both ends
+```{r}
+fit <- gam(y ~ s(x,bs="zb"),
+           knots = list(x=ks),
+           family=gaussian(),data=d)
+summary(fit)
+fit$aic
+plot(fit,ylim=c(-1.5,1.5))
+```
+
+Constrain the smooth to be flat at the leftmost end
+```{r}
+fit <- gam(y ~ s(x,bs="fl"),
+           knots = list(x=ks),
+           family=gaussian(),data=d)
+summary(fit)
+fit$aic
+plot(fit,ylim=c(-1.5,1.5))
+```
+
+Constrain the smooth to have zero derivative at the leftmost end
+```{r}
+fit <- gam(y ~ s(x,bs="zl"),
+           knots = list(x=ks),
+           family=gaussian(),data=d)
+summary(fit)
+fit$aic
+plot(fit,ylim=c(-1.5,1.5))
+```
+
+
+Constrain the smooth to be flat at the rightmost end
+```{r}
+fit <- gam(y ~ s(x,bs="fr"),
+           knots = list(x=ks),
+           family=gaussian(),data=d)
+summary(fit)
+fit$aic
+plot(fit,ylim=c(-1.5,1.5))
+```
+
+Constrain the smooth to have zero derivative at the rightmost end
+```{r}
+fit <- gam(y ~ s(x,bs="zr"),
+           knots = list(x=ks),
+           family=gaussian(),data=d)
+summary(fit)
+fit$aic
+plot(fit,ylim=c(-1.5,1.5))
 ```
