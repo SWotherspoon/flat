@@ -1,0 +1,17 @@
+Package: flat
+Title: Smooths for mgcv that are constrained to be flat at the ends
+Version: 0.0.0.9000
+Authors@R:
+    c(person("Simon", "Wotherspoon", email="Simon.Wotherspoon@aad.gov.au",
+             role = c("aut", "cre"), comment = c(ORCID = "0000-0002-6947-4445")),
+      person("Ben", "Raymond", email="Ben.Raymond@aad.gov.au",
+             role = c("aut")))
+Description: Smooths for use with mgcv that are flat at one or both of the end knots.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.1
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
