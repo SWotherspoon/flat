@@ -1,31 +1,31 @@
 makeK <- function(h) {
-  n <- length(h)+1
+  n <- length(h)+1L
   K <- matrix(0,n,n)
-  K[seq.int(1,n*n,n+1)] <- c(h/3,0)+c(0,h/3)
-  K[seq.int(2,n*n,n+1)] <- h/6
-  K[seq.int(n+1,n*n,n+1)] <- h/6
+  K[seq.int(1L,n*n,n+1L)] <- c(h/3,0)+c(0,h/3)
+  K[seq.int(2L,n*n,n+1L)] <- h/6
+  K[seq.int(n+1L,n*n,n+1L)] <- h/6
   K
 }
 
 makeBfb <- function(h) {
-  n <- length(h)+1
+  n <- length(h)+1L
   hm <- hp <- h
-  hm[1] <- -hm[1]
+  hm[1L] <- -hm[1L]
   B <- matrix(0,n,n)
-  B[seq.int(1,n*n,n+1)] <- c(hm/3,0)+c(0,hp/3)
-  B[seq.int(2,n*n,n+1)] <- hp/6
-  B[seq.int(n+1,n*n,n+1)] <- hm/6
+  B[seq.int(1L,n*n,n+1L)] <- c(hm/3,0)+c(0,hp/3)
+  B[seq.int(2L,n*n,n+1L)] <- hp/6
+  B[seq.int(n+1L,n*n,n+1L)] <- hm/6
   B
 }
 
 makeDfb <- function(h) {
-  n <- length(h)+1
+  n <- length(h)+1L
   qm <- qp <- 1/h
-  qm[1] <- -qm[1]
+  qm[1L] <- -qm[1L]
   D <- matrix(0,n,n)
-  D[seq.int(1,n*n,n+1)] <- c(-qm,0)+c(0,-qp)
-  D[seq.int(2,n*n,n+1)] <- qp
-  D[seq.int(n+1,n*n,n+1)] <- qm
+  D[seq.int(1L,n*n,n+1L)] <- c(-qm,0)+c(0,-qp)
+  D[seq.int(2L,n*n,n+1L)] <- qp
+  D[seq.int(n+1L,n*n,n+1L)] <- qm
   D
 }
 
@@ -66,33 +66,33 @@ makeDfb <- function(h) {
 ##' @export
 smooth.construct.fb.smooth.spec <- function(object,data,knots) {
 
-  if(length(object$term)!=1)
+  if(length(object$term)!=1L)
     stop("Basis only handles 1D smooths")
   x <- data[[object$term]]
   nx <- length(x)
   k <- sort(knots[[object$term]])
   nk <- length(k)
 
-  if(nk<=3) stop("At least 3 knots must be supplied")
+  if(nk<=3L) stop("At least 3 knots must be supplied")
   object$bs.dim <- nk
 
-  h <- k[-1]-k[-nk]
+  h <- k[-1L]-k[-nk]
   F <- solve(makeBfb(h),makeDfb(h))
   j <- findInterval(x,k,all.inside=TRUE)
   X <- matrix(0,nx,nk)
-  X[cbind(seq_len(nx),j)] <- (k[j+1]-x)/h[j]
-  X[cbind(seq_len(nx),j+1)] <- (x-k[j])/h[j]
-  cm <- ((k[j+1]-x)^3/h[j]-h[j]*(k[j+1]-x))/6
+  X[cbind(seq_len(nx),j)] <- (k[j+1L]-x)/h[j]
+  X[cbind(seq_len(nx),j+1L)] <- (x-k[j])/h[j]
+  cm <- ((k[j+1L]-x)^3/h[j]-h[j]*(k[j+1L]-x))/6
   cp <- ((x-k[j])^3/h[j]-h[j]*(x-k[j]))/6
-  X <- X+cm*F[j,]+cp*F[j+1,]
+  X <- X+cm*F[j,]+cp*F[j+1L,]
 
   object$X <- X
   object$S <- list()
   if(!object$fixed) {
-    object$S[[1]] <- t(F)%*%makeK(h)%*%F
+    object$S[[1L]] <- t(F)%*%makeK(h)%*%F
   }
-  object$rank <- nk-2
-  object$null.space.dim <- 2
+  object$rank <- nk-2L
+  object$null.space.dim <- 2L
   object$knots <- k
   object$df <- ncol(object$X)
   class(object) <- "fb.smooth"
@@ -125,15 +125,15 @@ Predict.matrix.fb.smooth <- function(object,data) {
   k <- object$knots
   nk <- length(k)
 
-  h <- k[-1]-k[-nk]
+  h <- k[-1L]-k[-nk]
   F <- solve(makeBfb(h),makeDfb(h))
   j <- findInterval(x,k,all.inside=TRUE)
   X <- matrix(0,nx,nk)
-  X[cbind(seq_len(nx),j)] <- (k[j+1]-x)/h[j]
-  X[cbind(seq_len(nx),j+1)] <- (x-k[j])/h[j]
-  cm <- ((k[j+1]-x)^3/h[j]-h[j]*(k[j+1]-x))/6
+  X[cbind(seq_len(nx),j)] <- (k[j+1L]-x)/h[j]
+  X[cbind(seq_len(nx),j+1L)] <- (x-k[j])/h[j]
+  cm <- ((k[j+1L]-x)^3/h[j]-h[j]*(k[j+1L]-x))/6
   cp <- ((x-k[j])^3/h[j]-h[j]*(x-k[j]))/6
-  X <- X+cm*F[j,]+cp*F[j+1,]
+  X <- X+cm*F[j,]+cp*F[j+1L,]
   X
 }
 
@@ -172,34 +172,34 @@ Predict.matrix.fb.smooth <- function(object,data) {
 ##' @export
 smooth.construct.zb.smooth.spec <- function(object,data,knots) {
 
-  if(length(object$term)!=1)
+  if(length(object$term)!=1L)
     stop("Basis only handles 1D smooths")
   x <- data[[object$term]]
   nx <- length(x)
   k <- sort(knots[[object$term]])
   nk <- length(k)
 
-  if(nk<=3) stop("At least 3 knots must be supplied")
+  if(nk<=3L) stop("At least 3 knots must be supplied")
   object$bs.dim <- nk
 
-  h <- k[-1]-k[-nk]
+  h <- k[-1L]-k[-nk]
   F <- solve(makeBfb(h),makeDfb(h))
   j <- findInterval(x,k,all.inside=TRUE)
   X <- matrix(0,nx,nk)
-  x <- pmin(k[nk],pmax(k[1],x))
-  X[cbind(seq_len(nx),j)] <- (k[j+1]-x)/h[j]
-  X[cbind(seq_len(nx),j+1)] <- (x-k[j])/h[j]
-  cm <- ((k[j+1]-x)^3/h[j]-h[j]*(k[j+1]-x))/6
+  x <- pmin(k[nk],pmax(k[1L],x))
+  X[cbind(seq_len(nx),j)] <- (k[j+1L]-x)/h[j]
+  X[cbind(seq_len(nx),j+1L)] <- (x-k[j])/h[j]
+  cm <- ((k[j+1L]-x)^3/h[j]-h[j]*(k[j+1L]-x))/6
   cp <- ((x-k[j])^3/h[j]-h[j]*(x-k[j]))/6
-  X <- X+cm*F[j,]+cp*F[j+1,]
+  X <- X+cm*F[j,]+cp*F[j+1L,]
 
   object$X <- X
   object$S <- list()
   if(!object$fixed) {
-    object$S[[1]] <- t(F)%*%makeK(h)%*%F
+    object$S[[1L]] <- t(F)%*%makeK(h)%*%F
   }
-  object$rank <- nk-2
-  object$null.space.dim <- 2
+  object$rank <- nk-2L
+  object$null.space.dim <- 2L
   object$knots <- k
   object$df <- ncol(object$X)
   class(object) <- "zb.smooth"
@@ -232,42 +232,42 @@ Predict.matrix.zb.smooth <- function(object,data) {
   k <- object$knots
   nk <- length(k)
 
-  h <- k[-1]-k[-nk]
+  h <- k[-1L]-k[-nk]
   F <- solve(makeBfb(h),makeDfb(h))
   j <- findInterval(x,k,all.inside=TRUE)
   X <- matrix(0,nx,nk)
-  x <- pmin(k[nk],pmax(k[1],x))
-  X[cbind(seq_len(nx),j)] <- (k[j+1]-x)/h[j]
-  X[cbind(seq_len(nx),j+1)] <- (x-k[j])/h[j]
-  cm <- ((k[j+1]-x)^3/h[j]-h[j]*(k[j+1]-x))/6
+  x <- pmin(k[nk],pmax(k[1L],x))
+  X[cbind(seq_len(nx),j)] <- (k[j+1L]-x)/h[j]
+  X[cbind(seq_len(nx),j+1L)] <- (x-k[j])/h[j]
+  cm <- ((k[j+1L]-x)^3/h[j]-h[j]*(k[j+1L]-x))/6
   cp <- ((x-k[j])^3/h[j]-h[j]*(x-k[j]))/6
-  X <- X+cm*F[j,]+cp*F[j+1,]
+  X <- X+cm*F[j,]+cp*F[j+1L,]
   X
 }
 
 
 
 makeBfl <- function(h) {
-  n <- length(h)+1
+  n <- length(h)+1L
   hm <- hp <- h
-  hm[1] <- -hm[1]
+  hm[1L] <- -hm[1L]
   hp[length(hp)] <- 0
   B <- matrix(0,n,n)
-  B[seq.int(1,n*n,n+1)] <- c(hm/3,1)+c(0,hp/3)
-  B[seq.int(2,n*n,n+1)] <- hp/6
-  B[seq.int(n+1,n*n,n+1)] <- hm/6
+  B[seq.int(1L,n*n,n+1L)] <- c(hm/3,1)+c(0,hp/3)
+  B[seq.int(2L,n*n,n+1L)] <- hp/6
+  B[seq.int(n+1L,n*n,n+1L)] <- hm/6
   B
 }
 
 makeDfl <- function(h) {
-  n <- length(h)+1
+  n <- length(h)+1L
   qm <- qp <- 1/h
-  qm[1] <- -qm[1]
+  qm[1L] <- -qm[1L]
   qp[length(qp)] <- 0
   D <- matrix(0,n,n)
-  D[seq.int(1,n*n,n+1)] <- c(-qm,0)+c(0,-qp)
-  D[seq.int(2,n*n,n+1)] <- qp
-  D[seq.int(n+1,n*n,n+1)] <- qm
+  D[seq.int(1L,n*n,n+1L)] <- c(-qm,0)+c(0,-qp)
+  D[seq.int(2L,n*n,n+1L)] <- qp
+  D[seq.int(n+1L,n*n,n+1L)] <- qm
   D
 }
 
@@ -307,33 +307,33 @@ makeDfl <- function(h) {
 ##' @export
 smooth.construct.fl.smooth.spec <- function(object,data,knots) {
 
-  if(length(object$term)!=1)
+  if(length(object$term)!=1L)
     stop("Basis only handles 1D smooths")
   x <- data[[object$term]]
   nx <- length(x)
   k <- sort(knots[[object$term]])
   nk <- length(k)
 
-  if(nk<=3) stop("At least 3 knots must be supplied")
+  if(nk<=3L) stop("At least 3 knots must be supplied")
   object$bs.dim <- nk
 
-  h <- k[-1]-k[-nk]
+  h <- k[-1L]-k[-nk]
   F <- solve(makeBfl(h),makeDfl(h))
   j <- findInterval(x,k,all.inside=TRUE)
   X <- matrix(0,nx,nk)
-  X[cbind(seq_len(nx),j)] <- (k[j+1]-x)/h[j]
-  X[cbind(seq_len(nx),j+1)] <- (x-k[j])/h[j]
-  cm <- ifelse(x > k[nk],0,(k[j+1]-x)^3/(6*h[j]))-h[j]*(k[j+1]-x)/6
+  X[cbind(seq_len(nx),j)] <- (k[j+1L]-x)/h[j]
+  X[cbind(seq_len(nx),j+1L)] <- (x-k[j])/h[j]
+  cm <- ifelse(x > k[nk],0,(k[j+1L]-x)^3/(6*h[j]))-h[j]*(k[j+1L]-x)/6
   cp <- ((x-k[j])^3/h[j]-h[j]*(x-k[j]))/6
-  X <- X+cm*F[j,]+cp*F[j+1,]
+  X <- X+cm*F[j,]+cp*F[j+1L,]
 
   object$X <- X
   object$S <- list()
   if(!object$fixed) {
-    object$S[[1]] <- t(F)%*%makeK(h)%*%F
+    object$S[[1L]] <- t(F)%*%makeK(h)%*%F
   }
-  object$rank <- nk-2
-  object$null.space.dim <- 2
+  object$rank <- nk-2L
+  object$null.space.dim <- 2L
   object$knots <- k
   object$df <- ncol(object$X)
   class(object) <- "fl.smooth"
@@ -366,15 +366,15 @@ Predict.matrix.fl.smooth <- function(object,data) {
   k <- object$knots
   nk <- length(k)
 
-  h <- k[-1]-k[-nk]
+  h <- k[-1L]-k[-nk]
   F <- solve(makeBfl(h),makeDfl(h))
   j <- findInterval(x,k,all.inside=TRUE)
   X <- matrix(0,nx,nk)
-  X[cbind(seq_len(nx),j)] <- (k[j+1]-x)/h[j]
-  X[cbind(seq_len(nx),j+1)] <- (x-k[j])/h[j]
-  cm <- ifelse(x > k[nk],0,(k[j+1]-x)^3/(6*h[j]))-h[j]*(k[j+1]-x)/6
+  X[cbind(seq_len(nx),j)] <- (k[j+1L]-x)/h[j]
+  X[cbind(seq_len(nx),j+1L)] <- (x-k[j])/h[j]
+  cm <- ifelse(x > k[nk],0,(k[j+1L]-x)^3/(6*h[j]))-h[j]*(k[j+1L]-x)/6
   cp <- ((x-k[j])^3/h[j]-h[j]*(x-k[j]))/6
-  X <- X+cm*F[j,]+cp*F[j+1,]
+  X <- X+cm*F[j,]+cp*F[j+1L,]
   X
 }
 
@@ -412,34 +412,34 @@ Predict.matrix.fl.smooth <- function(object,data) {
 ##' @export
 smooth.construct.zl.smooth.spec <- function(object,data,knots) {
 
-  if(length(object$term)!=1)
+  if(length(object$term)!=1L)
     stop("Basis only handles 1D smooths")
   x <- data[[object$term]]
   nx <- length(x)
   k <- sort(knots[[object$term]])
   nk <- length(k)
 
-  if(nk<=3) stop("At least 3 knots must be supplied")
+  if(nk<=3L) stop("At least 3 knots must be supplied")
   object$bs.dim <- nk
 
-  h <- k[-1]-k[-nk]
+  h <- k[-1L]-k[-nk]
   F <- solve(makeBfl(h),makeDfl(h))
   j <- findInterval(x,k,all.inside=TRUE)
   X <- matrix(0,nx,nk)
-  x <- pmax(k[1],x)
-  X[cbind(seq_len(nx),j)] <- (k[j+1]-x)/h[j]
-  X[cbind(seq_len(nx),j+1)] <- (x-k[j])/h[j]
-  cm <- ifelse(x > k[nk],0,(k[j+1]-x)^3/(6*h[j]))-h[j]*(k[j+1]-x)/6
+  x <- pmax(k[1L],x)
+  X[cbind(seq_len(nx),j)] <- (k[j+1L]-x)/h[j]
+  X[cbind(seq_len(nx),j+1L)] <- (x-k[j])/h[j]
+  cm <- ifelse(x > k[nk],0,(k[j+1L]-x)^3/(6*h[j]))-h[j]*(k[j+1L]-x)/6
   cp <- ((x-k[j])^3/h[j]-h[j]*(x-k[j]))/6
-  X <- X+cm*F[j,]+cp*F[j+1,]
+  X <- X+cm*F[j,]+cp*F[j+1L,]
 
   object$X <- X
   object$S <- list()
   if(!object$fixed) {
-    object$S[[1]] <- t(F)%*%makeK(h)%*%F
+    object$S[[1L]] <- t(F)%*%makeK(h)%*%F
   }
-  object$rank <- nk-2
-  object$null.space.dim <- 2
+  object$rank <- nk-2L
+  object$null.space.dim <- 2L
   object$knots <- k
   object$df <- ncol(object$X)
   class(object) <- "zl.smooth"
@@ -472,40 +472,40 @@ Predict.matrix.zl.smooth <- function(object,data) {
   k <- object$knots
   nk <- length(k)
 
-  h <- k[-1]-k[-nk]
+  h <- k[-1L]-k[-nk]
   F <- solve(makeBfl(h),makeDfl(h))
   j <- findInterval(x,k,all.inside=TRUE)
   X <- matrix(0,nx,nk)
-  x <- pmax(k[1],x)
-  X[cbind(seq_len(nx),j)] <- (k[j+1]-x)/h[j]
-  X[cbind(seq_len(nx),j+1)] <- (x-k[j])/h[j]
-  cm <- ifelse(x > k[nk],0,(k[j+1]-x)^3/(6*h[j]))-h[j]*(k[j+1]-x)/6
+  x <- pmax(k[1L],x)
+  X[cbind(seq_len(nx),j)] <- (k[j+1L]-x)/h[j]
+  X[cbind(seq_len(nx),j+1L)] <- (x-k[j])/h[j]
+  cm <- ifelse(x > k[nk],0,(k[j+1L]-x)^3/(6*h[j]))-h[j]*(k[j+1L]-x)/6
   cp <- ((x-k[j])^3/h[j]-h[j]*(x-k[j]))/6
-  X <- X+cm*F[j,]+cp*F[j+1,]
+  X <- X+cm*F[j,]+cp*F[j+1L,]
   X
 }
 
 
 
 makeBfr <- function(h) {
-  n <- length(h)+1
+  n <- length(h)+1L
   hm <- hp <- h
-  hm[1] <- 0
+  hm[1L] <- 0
   B <- matrix(0,n,n)
-  B[seq.int(1,n*n,n+1)] <- c(hm/3,0)+c(1,hp/3)
-  B[seq.int(2,n*n,n+1)] <- hp/6
-  B[seq.int(n+1,n*n,n+1)] <- hm/6
+  B[seq.int(1L,n*n,n+1L)] <- c(hm/3,0)+c(1,hp/3)
+  B[seq.int(2L,n*n,n+1L)] <- hp/6
+  B[seq.int(n+1L,n*n,n+1L)] <- hm/6
   B
 }
 
 makeDfr <- function(h) {
-  n <- length(h)+1
+  n <- length(h)+1L
   qm <- qp <- 1/h
-  qm[1] <- 0
+  qm[1L] <- 0
   D <- matrix(0,n,n)
-  D[seq.int(1,n*n,n+1)] <- c(-qm,0)+c(0,-qp)
-  D[seq.int(2,n*n,n+1)] <- qp
-  D[seq.int(n+1,n*n,n+1)] <- qm
+  D[seq.int(1L,n*n,n+1L)] <- c(-qm,0)+c(0,-qp)
+  D[seq.int(2L,n*n,n+1L)] <- qp
+  D[seq.int(n+1L,n*n,n+1L)] <- qm
   D
 }
 
@@ -545,33 +545,33 @@ makeDfr <- function(h) {
 ##' @export
 smooth.construct.fr.smooth.spec <- function(object,data,knots) {
 
-  if(length(object$term)!=1)
+  if(length(object$term)!=1L)
     stop("Basis only handles 1D smooths")
   x <- data[[object$term]]
   nx <- length(x)
   k <- sort(knots[[object$term]])
   nk <- length(k)
 
-  if(nk<=3) stop("At least 3 knots must be supplied")
+  if(nk<=3L) stop("At least 3 knots must be supplied")
   object$bs.dim <- nk
 
-  h <- k[-1]-k[-nk]
+  h <- k[-1L]-k[-nk]
   F <- solve(makeBfr(h),makeDfr(h))
   j <- findInterval(x,k,all.inside=TRUE)
   X <- matrix(0,nx,nk)
-  X[cbind(seq_len(nx),j)] <- (k[j+1]-x)/h[j]
-  X[cbind(seq_len(nx),j+1)] <- (x-k[j])/h[j]
-  cm <- ((k[j+1]-x)^3/h[j]-h[j]*(k[j+1]-x))/6
-  cp <- ifelse(x < k[1],0,(x-k[j])^3/(6*h[j]))-h[j]*(x-k[j])/6
-  X <- X+cm*F[j,]+cp*F[j+1,]
+  X[cbind(seq_len(nx),j)] <- (k[j+1L]-x)/h[j]
+  X[cbind(seq_len(nx),j+1L)] <- (x-k[j])/h[j]
+  cm <- ((k[j+1L]-x)^3/h[j]-h[j]*(k[j+1L]-x))/6
+  cp <- ifelse(x < k[1L],0,(x-k[j])^3/(6*h[j]))-h[j]*(x-k[j])/6
+  X <- X+cm*F[j,]+cp*F[j+1L,]
 
   object$X <- X
   object$S <- list()
   if(!object$fixed) {
-    object$S[[1]] <- t(F)%*%makeK(h)%*%F
+    object$S[[1L]] <- t(F)%*%makeK(h)%*%F
   }
-  object$rank <- nk-2
-  object$null.space.dim <- 2
+  object$rank <- nk-2L
+  object$null.space.dim <- 2L
   object$knots <- k
   object$df <- ncol(object$X)
   class(object) <- "fr.smooth"
@@ -604,15 +604,15 @@ Predict.matrix.fr.smooth <- function(object,data) {
   k <- object$knots
   nk <- length(k)
 
-  h <- k[-1]-k[-nk]
+  h <- k[-1L]-k[-nk]
   F <- solve(makeBfr(h),makeDfr(h))
   j <- findInterval(x,k,all.inside=TRUE)
   X <- matrix(0,nx,nk)
-  X[cbind(seq_len(nx),j)] <- (k[j+1]-x)/h[j]
-  X[cbind(seq_len(nx),j+1)] <- (x-k[j])/h[j]
-  cm <- ((k[j+1]-x)^3/h[j]-h[j]*(k[j+1]-x))/6
-  cp <- ifelse(x < k[1],0,(x-k[j])^3/(6*h[j]))-h[j]*(x-k[j])/6
-  X <- X+cm*F[j,]+cp*F[j+1,]
+  X[cbind(seq_len(nx),j)] <- (k[j+1L]-x)/h[j]
+  X[cbind(seq_len(nx),j+1L)] <- (x-k[j])/h[j]
+  cm <- ((k[j+1L]-x)^3/h[j]-h[j]*(k[j+1L]-x))/6
+  cp <- ifelse(x < k[1L],0,(x-k[j])^3/(6*h[j]))-h[j]*(x-k[j])/6
+  X <- X+cm*F[j,]+cp*F[j+1L,]
   X
 }
 
@@ -650,34 +650,34 @@ Predict.matrix.fr.smooth <- function(object,data) {
 ##' @export
 smooth.construct.zr.smooth.spec <- function(object,data,knots) {
 
-  if(length(object$term)!=1)
+  if(length(object$term)!=1L)
     stop("Basis only handles 1D smooths")
   x <- data[[object$term]]
   nx <- length(x)
   k <- sort(knots[[object$term]])
   nk <- length(k)
 
-  if(nk<=3) stop("At least 3 knots must be supplied")
+  if(nk<=3L) stop("At least 3 knots must be supplied")
   object$bs.dim <- nk
 
-  h <- k[-1]-k[-nk]
+  h <- k[-1L]-k[-nk]
   F <- solve(makeBfr(h),makeDfr(h))
   j <- findInterval(x,k,all.inside=TRUE)
   X <- matrix(0,nx,nk)
   x <- pmin(k[nk],x)
-  X[cbind(seq_len(nx),j)] <- (k[j+1]-x)/h[j]
-  X[cbind(seq_len(nx),j+1)] <- (x-k[j])/h[j]
-  cm <- ((k[j+1]-x)^3/h[j]-h[j]*(k[j+1]-x))/6
-  cp <- ifelse(x < k[1],0,(x-k[j])^3/(6*h[j]))-h[j]*(x-k[j])/6
-  X <- X+cm*F[j,]+cp*F[j+1,]
+  X[cbind(seq_len(nx),j)] <- (k[j+1L]-x)/h[j]
+  X[cbind(seq_len(nx),j+1L)] <- (x-k[j])/h[j]
+  cm <- ((k[j+1L]-x)^3/h[j]-h[j]*(k[j+1L]-x))/6
+  cp <- ifelse(x < k[1L],0,(x-k[j])^3/(6*h[j]))-h[j]*(x-k[j])/6
+  X <- X+cm*F[j,]+cp*F[j+1L,]
 
   object$X <- X
   object$S <- list()
   if(!object$fixed) {
-    object$S[[1]] <- t(F)%*%makeK(h)%*%F
+    object$S[[1L]] <- t(F)%*%makeK(h)%*%F
   }
-  object$rank <- nk-2
-  object$null.space.dim <- 2
+  object$rank <- nk-2L
+  object$null.space.dim <- 2L
   object$knots <- k
   object$df <- ncol(object$X)
   class(object) <- "zr.smooth"
@@ -710,15 +710,15 @@ Predict.matrix.zr.smooth <- function(object,data) {
   k <- object$knots
   nk <- length(k)
 
-  h <- k[-1]-k[-nk]
+  h <- k[-1L]-k[-nk]
   F <- solve(makeBfr(h),makeDfr(h))
   j <- findInterval(x,k,all.inside=TRUE)
   X <- matrix(0,nx,nk)
   x <- pmin(k[nk],x)
-  X[cbind(seq_len(nx),j)] <- (k[j+1]-x)/h[j]
-  X[cbind(seq_len(nx),j+1)] <- (x-k[j])/h[j]
-  cm <- ((k[j+1]-x)^3/h[j]-h[j]*(k[j+1]-x))/6
-  cp <- ifelse(x < k[1],0,(x-k[j])^3/(6*h[j]))-h[j]*(x-k[j])/6
-  X <- X+cm*F[j,]+cp*F[j+1,]
+  X[cbind(seq_len(nx),j)] <- (k[j+1L]-x)/h[j]
+  X[cbind(seq_len(nx),j+1L)] <- (x-k[j])/h[j]
+  cm <- ((k[j+1L]-x)^3/h[j]-h[j]*(k[j+1L]-x))/6
+  cp <- ifelse(x < k[1L],0,(x-k[j])^3/(6*h[j]))-h[j]*(x-k[j])/6
+  X <- X+cm*F[j,]+cp*F[j+1L,]
   X
 }
