@@ -1,6 +1,6 @@
 Package: flat
 Title: Smooths for mgcv that are constrained to be flat at the ends
-Version: 0.0.0.9000
+Version: 0.0.1.9000
 Authors@R:
     c(person("Simon", "Wotherspoon", email="Simon.Wotherspoon@aad.gov.au",
              role = c("aut", "cre"), comment = c(ORCID = "0000-0002-6947-4445")),
