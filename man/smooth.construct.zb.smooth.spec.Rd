@@ -21,7 +21,7 @@ in same order and with same names as \code{data}. Cannot be
 }
 \value{
 An object of class "fb.smooth", containing the elements of a
-smooth class documented under \code{\link[=smooth.construct]{smooth.construct()}}.
+smooth class documented under \code{\link[mgcv:smooth.construct]{mgcv::smooth.construct()}}.
 }
 \description{
 Penalized cubic regression splines constrained to have zero first
